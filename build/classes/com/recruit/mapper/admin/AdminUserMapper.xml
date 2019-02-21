@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recruit.mapper.admin.AdminUserMapper">
+
+	<select id="userList" resultType="UserBean">
+		select user_id,user_name,user_sex,user_email,user_date,user_phone,user_address,user_state
+		from t_user
+	</select>
+	<select id="userAll" resultType="int">
+		select count(*) from t_user
+	</select>
+	
+	<update id="changeState" parameterType="UserBean">
+		update t_user set user_state = #{user_state} where user_id=#{user_id}
+	</update>
+	
+	<delete id="deleteUser" parameterType="string">
+		delete from t_user where user_id=#{user_id}
+	</delete>
+	
+	<select id="searchUser" parameterType="UserBean" resultType="UserBean">
+		select user_id,user_name,user_sex,user_email,user_date,user_phone,user_address,user_state
+		from t_user
+		<where>
+			<if test="user_name!=null and user_name!=''">
+				and user_name like CONCAT(CONCAT('%',#{user_name}),'%')
+			</if>
+			<if test="user_email!=null and user_email!=''">
+				and user_email like CONCAT(CONCAT('%',#{user_email}),'%')
+			</if>
+		</where>
+	</select>
+	<select id="searchUserAll" parameterType="UserBean" resultType="int">
+		select count(*)
+		from t_user
+		<where>
+			<if test="user_name!=null and user_name!=''">
+				user_name like CONCAT(CONCAT('%',#{user_name}),'%')
+			</if>
+			<if test="user_email!=null and user_email!=''">
+				and user_email like CONCAT(CONCAT('%',#{user_email}),'%')
+			</if>
+		</where>
+	</select>
+
+</mapper>

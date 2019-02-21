@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recruit.mapper.admin.AdministratorMapper">
+	<select id="adminCheck" parameterType="AdministratorBean" resultType="int">
+		select count(*) 
+		from t_admin 
+		where ad_name=#{ad_name} and ad_password=#{ad_password}
+	</select>
+	
+	<select id="adminAllList" resultType="AdministratorBean">
+		select * from t_admin
+	</select>
+	
+	<select id="adminAllNum" resultType="int">
+		select count(*) from t_admin
+	</select>
+	
+	<select id="getAdminByName" parameterType="string" resultType="AdministratorBean">
+		select * from t_admin where ad_name=#{ad_name}
+	
+	</select>
+	
+	<update id="updateState" parameterType="AdministratorBean">
+		update t_admin set ad_state=#{ad_state} where ad_id=#{ad_id}
+	
+	</update>
+	
+	
+</mapper>

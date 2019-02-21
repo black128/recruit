@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recruit.mapper.CategoryMapper">
+	<select id="queryAllCategory" resultType="QueryBean">
+		select a.cate_id,a.cate_name,b.cate_name cate_fname,a.cate_fid,a.cate_state 
+		from t_category a left join t_category b
+		on a.cate_fid=b.cate_id
+	</select>
+	
+	<insert id="addCategory" parameterType="CategoryBean" >
+		insert into t_category(cate_id,cate_name,cate_state) 
+		values(#{cate_id},#{cate_name},#{cate_state})
+	</insert>
+	
+	<delete id="deleteCategoryById" parameterType="string" >
+		delete from t_category where cate_id = #{cate_id}
+	</delete>
+	
+	<select id="queryAllCateNum" resultType="int">
+		select count(cate_id) from t_category
+	</select>
+	
+	<update id="updateCateState" parameterType="CategoryBean">
+		update t_category set cate_state=#{cate_state} 
+		where cate_id=#{cate_id}
+	</update>
+	
+	<select id="queryAllSecondById" parameterType="string" resultType="QueryBean">
+		select cate_id,cate_name,cate_fid,cate_state 
+		from t_category
+		where cate_fid=#{cate_id}
+	
+	</select>
+	
+	<select id="firstCateList" resultType="QueryBean">
+		select cate_id,cate_name,cate_state from t_category where cate_fid is null
+	</select>
+	
+	<select id="queryCategoryById" parameterType="string" resultType="QueryBean">
+		select a.cate_id,a.cate_name,b.cate_name cate_fname,a.cate_fid,a.cate_state 
+		from t_category a left join t_category b
+		on a.cate_fid=b.cate_id
+		where a.cate_id=#{cate_id}
+	</select>
+	
+	<update id="updateCategory" parameterType="QueryBean">
+		update t_category set cate_name=#{cate_name},cate_fid=#{cate_fid}
+		where cate_id=#{cate_id}
+	</update>
+	
+	<select id="secondCateList" resultType="QueryBean">
+		select a.cate_id,a.cate_name
+		from t_category a 
+		where a.cate_fid is  null 
+		and  a.cate_id not in (
+		select DISTINCT b.cate_fid  FROM t_category b where cate_fid is not null)
+	
+	 </select>
+	 
+	 <select id="queryAllSecond" resultType="QueryBean">
+	 	SELECT cate_id,cate_name,cate_state 
+		FROM t_category
+		where cate_fid is not NULL
+		and cate_state=1 
+	 
+	 </select>
+	
+</mapper>

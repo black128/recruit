@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.recruit.mapper.JobMapper">
+
+	<select id="search" parameterType="Job" resultType="Job">
+
+		select jobname,
+		j.jobid,
+		j.cate_id,
+		j.location,
+		j.company,
+		j.jobtime,
+		j.jobtype,
+
+		j.salary2,
+		c.cate_name cate_name
+		from t_job j
+
+		left join
+		t_category c on
+		j.cate_id=c.cate_id
+
+		<where>
+
+
+			<if test="fid!=null and fid!='' ">
+				and c.cate_fid=#{fid}
+			</if>
+
+			<if test="jobname!=null and jobname!='' ">
+				and j.jobname like '%${jobname}%'
+			</if>
+			<if test="location !=null and location!='' ">
+				and j.location = '${location}'
+			</if>
+			<if test="cate_id !=null and cate_id!='' ">
+				and j.cate_id = '${cate_id}'
+			</if>
+		</where>
+	</select>
+
+
+	<select id="showjob" parameterType="string" resultType="ShowJob">
+		select
+		j.`cate_id` id,
+		j.jobid,
+		j.jobname,location,j.`company`,j.`dic`,j.jobtime,j.jobtype,j.`salary2`,c.`cate_name`
+		from
+		t_job j,t_category c
+		where j.jobid = #{jobid} and
+		j.cate_id=c.cate_id
+	</select>
+
+
+	<select id="findalljob" resultType="ShowJob">
+
+		select
+		jobid,
+		jobname,
+		j.cate_id id,
+		j.jobtype,
+		j.jobtime,
+		j.location,
+		j.company,
+		j.salary1,
+		j.salary2,
+		c.cate_name cate_name
+		from t_job j ,t_category c
+		where
+		j.cate_id = c.cate_id
+
+	</select>
+
+
+	<delete id="deletejob" parameterType="string">
+
+		delete from t_job where
+		jobid =#{id}
+
+	</delete>
+
+	<insert id="addjob" parameterType="ShowJob">
+
+		insert into
+		t_job(jobid,jobname,cate_id,location,company,salary2,jobtime,jobtype,dic)
+
+		values(#{jobid},#{jobname},#{id},#{location},#{company},#{salary2},#{jobtime},#{jobtype},#{dic})
+
+	</insert>
+
+	<select id="findjobbyid" parameterType="string"
+		resultType="ShowJob">
+
+		select jobname,
+		j.jobid,
+		j.cate_id id,
+		j.jobtype,
+		j.jobtime,
+		j.location,
+		j.dic,
+		j.company,
+		j.salary1,
+		j.salary2,
+		c.cate_name cate_name,
+		c.cate_fid fid
+		from t_job j ,t_category c
+		where j.cate_id = c.cate_id
+		and j.jobid =
+		#{jobid};
+
+	</select>
+
+
+	<update id="editaddjob" parameterType="ShowJob">
+
+		update t_job j set
+		jobname=#{jobname},
+
+		j.cate_id = #{id},
+		j.jobtype = #{jobtype},
+		j.jobtime
+		= #{jobtime},
+		j.location =
+		#{location},
+		j.dic = #{dic},
+		j.company =
+		#{company},
+
+		j.salary2 = #{salary2}
+
+		where j.jobid = #{jobid}
+
+	</update>
+
+	<insert id="useraddjob">
+		insert into
+		t_userjob(user_id,user_name,message,job_id,user_email) values(
+
+		#{user_id},#{user_name},#{message},#{jobid},#{user_email}
+
+		)
+
+	</insert>
+
+	<select id="showuserjob" parameterType="string"
+		resultType="UserJob">
+		select
+		u.user_id,u.user_name,u.message,u.user_email,j.jobname
+		from t_job j,
+		t_userjob u
+		where u.job_id=#{jobid} and u.job_id = j.jobid
+	</select>
+	
+	<update id="userjobdelete" parameterType="string">
+
+		update t_userjob set state = '2' where job_id = #{1} and user_id =#{0}
+
+	</update>
+	
+
+	
+	<update id="adaddjob" parameterType="string">
+	
+		update t_userjob set state = '1' where job_id = #{1} and user_id =#{0}
+	
+	
+	</update>
+
+
+
+</mapper>

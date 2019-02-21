@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recruit.mapper.UserMapper">
+
+	<select id="checkName" parameterType="string" resultType="int" >
+		select count(*) from t_user where user_name = #{user_name}
+	</select>
+	
+	<insert id="doRegister" parameterType="UserBean" >
+		insert into t_user(
+			user_id,
+			user_name,
+			user_email,
+			user_password,
+			user_img,
+			user_birthday,
+			user_phone,
+			user_education,
+			user_address,
+			user_details,
+			user_resume,
+			user_sex,
+			user_date,
+			user_state)
+		values(
+			#{user_id},
+			#{user_name},
+			#{user_email},
+			#{user_password},
+			'c3c4655448f14b3d946a670af7b8984b.jpg',
+			'null',
+			'null',
+			'null',
+			'null',
+			'null',
+			'null',
+			0,
+			#{user_date},
+			1)
+	</insert>
+	
+	<select id="doLogin" parameterType="UserBean" resultType="int">
+		select count(*) from t_user where user_name=#{user_name} and user_password=#{user_password}
+	</select>
+	
+	<select id="selectUser" parameterType="UserBean" resultType="UserBean">
+		select user_id,
+			user_name,
+			user_email,
+			user_password,
+			user_img,
+			user_birthday,
+			user_phone,
+			user_education,
+			user_address,
+			user_details,
+			user_resume,
+			user_sex,
+			user_date,
+			user_state
+		from t_user
+		where user_name=#{user_name}
+	</select>
+	<update id="updateUser" parameterType="UserBean">
+		update t_user set
+			user_name=#{user_name},
+			user_email=#{user_email},
+			user_img=#{user_img},
+			user_birthday=#{user_birthday},
+			user_phone=#{user_phone},
+			user_education=#{user_education},
+			user_address=#{user_address},
+			user_details=#{user_details},
+			user_sex=#{user_sex}
+		where user_id=#{user_id}
+	</update>
+	
+	<select id="getResumeByUserid" parameterType="string" resultType="ResumeBean">
+		select resume_id,resume_name,user_id,resume_oname from t_resume where user_id=#{user_id}
+	</select>
+	
+	<insert id="addResume" parameterType="ResumeBean" >
+		insert into t_resume(resume_id,resume_name,user_id,resume_oname) values(#{resume_id},#{resume_name},#{user_id},#{resume_oname})
+	</insert>
+	
+	<delete id="deleteResume" parameterType="string" >
+		delete from t_resume where resume_id=#{resume_id}
+	</delete>
+	
+	
+	<select id="selectJob" parameterType="UserBean" resultType="Mjob">
+		select 
+				jobname,
+				cate_id,
+				location,
+				company,
+				salary1,
+				salary2,
+				jobtime,
+				jobtype,
+				dic,
+				j.jobid,
+				state
+			from t_job j , t_userjob u
+			where j.jobid = u.job_id 
+			and u.user_id=#{user_id}
+	</select>
+	<select id="chkPassword" parameterType="UserBean" resultType="int">
+		select count(*) from t_user where user_name=#{user_name} and user_password=#{oldpwd}
+	</select>
+	
+	<update id="changePassword" parameterType="UserBean">
+		update t_user set user_password = #{user_password} where user_name=#{user_name}
+	</update>
+</mapper>
